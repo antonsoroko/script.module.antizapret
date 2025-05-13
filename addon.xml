@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="script.module.antizapret" name="Antizapret Proxy Module for usage in Add-ons" version="1.0.0" provider-name="antonsoroko">
     <requires>
-        <import addon="script.module.six" optional="false" />
+        <import addon="script.module.six" optional="false"/>
     </requires>
-    <extension point="xbmc.python.module" library="lib" />
+    <extension point="xbmc.python.module" library="lib"/>
     <extension point="xbmc.addon.metadata">
         <platform>all</platform>
         <source>https://github.com/antonsoroko/script.module.antizapret</source>
-        <language></language>
         <license>MIT License</license>
         <summary lang="en">Python module to bypass web sites blocking with help of Antizapret proxy.</summary>
         <description lang="en">This Python module helps add-ons to bypass site blocking with help of Antizapret proxy. Works on both Python 3 and 2.</description>
