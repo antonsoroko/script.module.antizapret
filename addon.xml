@@ -12,5 +12,8 @@
         <description lang="en">This Python module helps add-ons to bypass site blocking with help of Antizapret proxy. Works on both Python 3 and 2.</description>
         <summary lang="ru">Python модуль для обхода блокировки web сайтов с помощью прокси Antizapret.</summary>
         <description lang="ru">Этот модуль Python помогает дополнениям обходить блокировку web сайтов с помощью прокси Antizapret. Работает как на Python 3, так и на Python 2.</description>
+        <assets>
+            <icon>icon.png</icon>
+        </assets>
     </extension>
 </addon>
