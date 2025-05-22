@@ -47,17 +47,9 @@ if not os.access(CACHE_DIR, os.W_OK):
 
 # CIDR to netmask, for "special" variable
 def cidr_to_netmask(cidr):
-    cidr = int(cidr)
-    mask = (0xFFFFFFFF >> (32 - cidr)) << (32 - cidr)
-    return (
-        str((0xFF000000 & mask) >> 24)
-        + "."
-        + str((0x00FF0000 & mask) >> 16)
-        + "."
-        + str((0x0000FF00 & mask) >> 8)
-        + "."
-        + str((0x000000FF & mask))
-    )
+    host_bits = 32 - int(cidr)
+    netmask = socket.inet_ntoa(struct.pack('!I', (1 << 32) - (1 << host_bits)))
+    return netmask
 
 # replace repeating sequences in domain to make it shorter
 def patternreplace(s, patterns):
