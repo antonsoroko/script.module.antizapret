@@ -342,24 +342,14 @@ def config():
                 message = "Initializing Antizapret config"
                 xbmc.log("[script.module.antizapret]: " + message, level=xbmc.LOGINFO)
                 try:
-                    pac["value"] = {
-                        "domains": {},
-                        "special": [],
-                        "d_ipaddr": [],
-                        "proxy_url": proxy_url,
-                        "patterns_domains_lzp": patterns_domains_lzp,
-                        "patterns_mask_lzp": patterns_mask_lzp,
-                    }
                     prev_ipval = 0
                     for i in range(len(d_ipaddr)):
                         cur_ipval = int(d_ipaddr[i], 36) + prev_ipval
                         d_ipaddr[i] = cur_ipval
                         prev_ipval = cur_ipval
-                    pac["value"]["d_ipaddr"] = d_ipaddr
 
                     for i in range(len(special)):
                         special[i][1] = cidr_to_netmask(special[i][1])
-                    pac["value"]["special"] = special
 
                     mask_lzp = a2b(patternreplace(mask_lzp, patterns_mask_lzp))
                     leftover = ""
@@ -383,7 +373,15 @@ def config():
                             leftover = leftover[dmnl:]
                     global table
                     table = None
-                    pac["value"]["domains"] = domains
+
+                    pac["value"] = {
+                        "domains": domains,
+                        "special": special,
+                        "d_ipaddr": d_ipaddr,
+                        "proxy_url": proxy_url,
+                        "patterns_domains_lzp": patterns_domains_lzp,
+                        "patterns_mask_lzp": patterns_mask_lzp,
+                    }
 
                     # Debug info
                     # print("len(d_ipaddr)={}".format(len(d_ipaddr)))
