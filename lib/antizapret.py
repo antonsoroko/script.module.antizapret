@@ -316,6 +316,9 @@ def config():
                             error_message = "Failed to parse kv {} in patterns_mask_lzp: {}".format(kv, e)
                             xbmc.log("[script.module.antizapret]: " + error_message, level=xbmc.LOGWARNING)
 
+                    three_part_suffixes_pattern_groups = re.search(r'if \(/(.*?)/.test\(host\)\)', data)
+                    three_part_suffixes_pattern = three_part_suffixes_pattern_groups.group(1)
+
                     proxy_groups = re.search(r'return "HTTPS ([^;]*?); PROXY ([^;]*?);', data, flags=re.DOTALL)  # if we got "proxy-ssl.js" file
                     if proxy_groups:
                         if PY3:
@@ -381,6 +384,7 @@ def config():
                         "proxy_url": proxy_url,
                         "patterns_domains_lzp": patterns_domains_lzp,
                         "patterns_mask_lzp": patterns_mask_lzp,
+                        "three_part_suffixes_pattern": three_part_suffixes_pattern,
                     }
 
                     # Debug info
@@ -427,8 +431,7 @@ class AntizapretProxy(object):
         host = host.split(":")[0]
 
         shost = host
-        three_part_suffixes_pattern = r"\.(?:ru|co|cu|com|info|net|org|gov|edu|int|mil|biz|pp|ne|msk|spb|nnov|od|in|ho|cc|dn|i|tut|v|dp|sl|ddns|dyndns|livejournal|herokuapp|azurewebsites|cloudfront|ucoz|3dn|nov|linode|sl-reverse|kiev|beget|kirov|akadns|scaleway|fastly|hldns|appspot|my1|hwcdn|deviantart|wixmp|wix|netdna-ssl|brightcove|berlogovo|edgecastcdn|trafficmanager|pximg|github|hopto|u-stream|google|keenetic|eu|googleusercontent|3nx|itch|notion|maryno|vercel|pythonanywhere|force|tilda|ggpht|iboards|mybb2|h1n|bdsmlr|narod|sb-cd|4chan|nichost|cv)\.[^.]+$"
-        if re.search(three_part_suffixes_pattern, host):
+        if re.search(self.config["three_part_suffixes_pattern"], host):
             shost = re.sub(r"(.+)\.([^.]+\.[^.]+\.[^.]+$)", r"\2", host)
         else:
             shost = re.sub(r"(.+)\.([^.]+\.[^.]+$)", r"\2", host)
