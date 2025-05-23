@@ -390,7 +390,7 @@ def config():
                     # Debug info
                     # print("len(d_ipaddr)={}".format(len(d_ipaddr)))
                     # # for iphex in d_ipaddr:
-                    # #     print(socket.inet_ntoa(struct.pack("<L", iphex)))
+                    # #     print(socket.inet_ntoa(struct.pack(">L", iphex)))
                     # len_domains=0
                     # for dmn in sorted(domains.keys()):
                     #     # print("domain=%s" % dmn)
