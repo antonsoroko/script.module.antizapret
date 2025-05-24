@@ -459,8 +459,7 @@ class AntizapretProxy(object):
             oip = dnsResolve(host)
         iphex = ""
         if oip:
-            iphex = list(map(int, oip.split(".")))
-            iphex = iphex[3] + iphex[2] * 256 + iphex[1] * 65536 + iphex[0] * 16777216
+            iphex = struct.unpack('>L', socket.inet_aton(oip))[0]
         yip = 0
         rip = 0
         if iphex and iphex in self.config["d_ipaddr"]:
