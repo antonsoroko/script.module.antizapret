@@ -30,7 +30,7 @@ if PY2:
 PATH_TEMP = translatePath("special://temp")
 CACHE_DIR = os.path.join(PATH_TEMP, 'script.module.antizapret')
 # Use these values for debugging
-# CACHE_DIR="/tmp/antizapret/"
+# CACHE_DIR = "/tmp/antizapret/"
 # CACHE = 1
 if not os.path.exists(CACHE_DIR):
     try:
@@ -279,7 +279,8 @@ def config():
                             error_message = "Failed to parse line {}: {}".format(line, e)
                             xbmc.log("[script.module.antizapret]: " + error_message, level=xbmc.LOGWARNING)
 
-                    # Initially d_ipaddr stores differences as numbers with base=36, then during initialization we convert them to IP (as integer).
+                    # Initially d_ipaddr stores differences as numbers with base=36,
+                    # then during initialization we convert them to IP as big-endian integer.
                     d_ipaddr_groups = re.search(r'var d_ipaddr = "(.*?)"', data, flags=re.DOTALL)
                     d_ipaddr = d_ipaddr_groups.group(1).replace('\\', '').replace('\n', '').split()
 
@@ -327,7 +328,7 @@ def config():
                     three_part_suffixes_pattern_groups = re.search(r'if \(/(.*?)/.test\(host\)\)', data)
                     three_part_suffixes_pattern = three_part_suffixes_pattern_groups.group(1)
 
-                    proxy_groups = re.search(r'return "HTTPS ([^;]*?); PROXY ([^;]*?);', data, flags=re.DOTALL)  # if we got "proxy-ssl.js" file
+                    proxy_groups = re.search(r'return "HTTPS ([^;]*?); PROXY ([^;]*?);', data)  # if we got "proxy-ssl.js" file
                     if proxy_groups:
                         if PY3:
                             proxy_server = proxy_groups.group(1)
@@ -336,7 +337,7 @@ def config():
                             proxy_server = proxy_groups.group(2)
                             proxy_scheme = 'http://'
                     else:
-                        proxy_groups = re.search(r'return "PROXY ([^;]*?);', data, flags=re.DOTALL)  # if we got "proxy-nossl.js" file
+                        proxy_groups = re.search(r'return "PROXY ([^;]*?);', data)  # if we got "proxy-nossl.js" file
                         if proxy_groups:
                             proxy_server = proxy_groups.group(1)
                             proxy_scheme = 'http://'
@@ -382,6 +383,9 @@ def config():
                                 xbmc.log("[script.module.antizapret]: " + error_message, level=xbmc.LOGWARNING)
                             domains[dmn][dcnt] = leftover[:dmnl]
                             leftover = leftover[dmnl:]
+                            # split domains line by dcnt length
+                            regex = re.compile(".{" + str(dcnt) + "}", re.DOTALL)
+                            domains[dmn][dcnt] = regex.findall(domains[dmn][dcnt])
                     global table
                     table = None
 
@@ -400,15 +404,13 @@ def config():
                     # # for iphex in d_ipaddr:
                     # #     print(socket.inet_ntoa(struct.pack(">L", iphex)))
                     # len_domains = 0
-                    # for dmn in sorted(domains.keys()):
+                    # for dmn in domains.keys():
                     #     # print("domain=%s" % dmn)
                     #     for dcnt in domains[dmn]:
                     #         # print("dcnt=%s" % dcnt)
-                    #         leftover = domains[dmn][dcnt]
-                    #         while leftover:
-                    #             # print(patternrestore(leftover[:dcnt], patterns_domains_lzp)+"."+dmn)
+                    #         for domain in domains[dmn][dcnt]:
+                    #             # print(patternrestore(domain, patterns_domains_lzp) + "." + dmn)
                     #             len_domains += 1
-                    #             leftover = leftover[dmnl:]
                     # print("len_domains={}".format(len_domains))
                 except Exception as e:
                     error_message = "Initializing Antizapret config failed: %s" % (repr(e))
@@ -444,7 +446,7 @@ class AntizapretProxy(object):
         else:
             shost = re.sub(r"(.+)\.([^.]+\.[^.]+$)", r"\2", host)
 
-        shost = re.sub(r"^www\.(.+)", r"\1", shost)  # remove leading www
+        shost = shost.removeprefix("www.")  # remove leading www
 
         curdomain = re.match(r"(.*)\.([^.]+$)", shost)
         if not curdomain or not curdomain.group(1):
@@ -454,11 +456,6 @@ class AntizapretProxy(object):
         curhost = patternreplace(curhost, self.config["patterns_domains_lzp"])
         curarr = []
         if curzone in self.config["domains"] and len(curhost) in self.config["domains"][curzone]:
-            if isinstance(self.config["domains"][curzone][len(curhost)], str):
-                regex = re.compile(".{" + str(len(curhost)) + "}", re.DOTALL)
-                self.config["domains"][curzone][len(curhost)] = regex.findall(
-                    self.config["domains"][curzone][len(curhost)]
-                )
             curarr = self.config["domains"][curzone][len(curhost)]
 
         oip = False

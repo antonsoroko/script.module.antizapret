@@ -15,9 +15,6 @@ if __name__ == "__main__":
     # Test cases
     print("Testing proxy detection:")
     torrent_trackers = [
-        "anidub.com",
-        "anidub.world",
-        "anidub.biz",
         "rutracker.org",
         "rutracker.net",
         "rutor.info",
@@ -56,7 +53,7 @@ if __name__ == "__main__":
         print("{} -> {}".format(domain, antizapret_proxy.detect(domain)))
     print("-" * 20)
 
-    test_urls = ["https://anidub.com", "https://rutracker.org", "https://rutracker.net/forum/viewtopic.php?t=5324346", "https://rutor.info/torrent/472", "https://rutor.is", "https://kinozal.tv", "https://www.lostfilm.tv:443", "https://ifconfig.co:443/ip"]
+    test_urls = ["https://rutracker.org", "https://rutracker.net/forum/viewtopic.php?t=5324346", "https://rutor.info/torrent/472", "https://rutor.is", "https://kinozal.tv", "https://www.lostfilm.tv:443", "https://ifconfig.co:443/ip"]
 
     for url in test_urls:
         print("\nTesting opening URL: %s" % (url))
