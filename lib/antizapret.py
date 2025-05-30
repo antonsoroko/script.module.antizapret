@@ -8,6 +8,7 @@ import base64
 import socket
 import struct
 import threading
+import xbmc
 from six import PY2, PY3
 from six.moves import urllib_request
 from contextlib import contextmanager, closing
@@ -373,6 +374,7 @@ def config():
                                 if not domains_lzp or not mask_lzp:
                                     error_message = "Warning: Ran out of LZP data during initialization."
                                     xbmc.log("[script.module.antizapret]: " + error_message, level=xbmc.LOGWARNING)
+                                    break
                                 u = unlzp(domains_lzp, mask_lzp, reqd)
                                 domains_lzp = domains_lzp[u[1]:]
                                 mask_lzp = mask_lzp[u[2]:]
@@ -386,6 +388,9 @@ def config():
                             # split domains line by dcnt length
                             regex = re.compile(".{" + str(dcnt) + "}", re.DOTALL)
                             domains[dmn][dcnt] = regex.findall(domains[dmn][dcnt])
+                        else:
+                            continue  # Continue if the inner loop wasn't broken.
+                        break  # Inner loop was broken, break the outer.
                     global table
                     table = None
 
@@ -400,7 +405,7 @@ def config():
                     }
 
                     # Debug info
-                    # print("len(d_ipaddr)={}".format(len(d_ipaddr)))
+                    # print("Number of blocked IP addresses = {}".format(len(d_ipaddr)))
                     # # for iphex in d_ipaddr:
                     # #     print(socket.inet_ntoa(struct.pack(">L", iphex)))
                     # len_domains = 0
@@ -411,7 +416,7 @@ def config():
                     #         for domain in domains[dmn][dcnt]:
                     #             # print(patternrestore(domain, patterns_domains_lzp) + "." + dmn)
                     #             len_domains += 1
-                    # print("len_domains={}".format(len_domains))
+                    # print("Number of blocked domains = {}".format(len_domains))
                 except Exception as e:
                     error_message = "Initializing Antizapret config failed: %s" % (repr(e))
                     xbmc.log("[script.module.antizapret]: " + error_message, level=xbmc.LOGERROR)
