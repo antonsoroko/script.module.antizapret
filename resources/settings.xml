@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+    <!-- General -->
+    <category label="128">
+        <setting id="antizapret_pac_url" type="text" label="PAC file URL" default="https://p.thenewone.lol:8443/proxy.pac" />
+    </category>
+</settings>
